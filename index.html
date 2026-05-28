@@ -441,7 +441,23 @@ nav {
   <!-- HEADER -->
   <header>
     <div class="logo">
-      <div class="logo-icon">M</div>
+      <div class="logo-icon" style="background:none;padding:0;overflow:visible;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="36" height="36">
+    <rect width="512" height="512" rx="110" fill="#07101f"/>
+    <radialGradient id="g" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#1a6ef5" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#07101f" stop-opacity="0"/>
+    </radialGradient>
+    <rect width="512" height="512" rx="110" fill="url(#g)"/>
+    <path d="M256 80 L390 130 L390 260 Q390 360 256 430 Q122 360 122 260 L122 130 Z" fill="#1a3a6e" stroke="#1a6ef5" stroke-width="6"/>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a6ef5"/>
+      <stop offset="100%" stop-color="#0a3a8a"/>
+    </linearGradient>
+    <path d="M256 108 L368 150 L368 260 Q368 345 256 405 Q144 345 144 260 L144 150 Z" fill="url(#sg)"/>
+    <polyline points="196,258 236,298 320,210" fill="none" stroke="white" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
       <span class="logo-name">MYSELF</span>
     </div>
     <div class="header-date" id="headerDate"></div>
