@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#07101f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MYSELF">
+<title>MYSELF</title>
+<link rel="manifest" href="./manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:       #07101f;
+  --s1:       #0d1b30;
+  --s2:       #132540;
+  --s3:       #1a3050;
+  --blue:     #1a6ef5;
+  --blue2:    #4d9fff;
+  --blue-glow:rgba(26,110,245,0.25);
+  --green:    #00e5a0;
+  --red:      #ff5f5f;
+  --text:     #e8f0fc;
+  --muted:    #4a6a8e;
+  --border:   rgba(77,159,255,0.15);
+  --radius:   18px;
+  --nav-h:    70px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+/* ── LAYOUT ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 22px 16px;
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: var(--blue);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  box-shadow: 0 0 16px var(--blue-glow);
+}
+
+.logo-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--text);
+}
+
+.header-date {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* ── SCREENS ── */
+.screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 18px calc(var(--nav-h) + 20px);
+  display: none;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active { display: block; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  height: var(--nav-h);
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.nav-btn {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  font-size: 10px; letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none; border: none;
+  cursor: pointer; padding: 8px 20px;
+  transition: color 0.2s;
+}
+.nav-btn .ni { font-size: 22px; line-height: 1; }
+.nav-btn.active { color: var(--blue2); }
+.nav-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--blue2);
+  display: none;
+}
+.nav-btn.active .nav-dot { display: block; }
+
+/* ── HOME SCREEN ── */
+.greeting { margin-bottom: 20px; }
+.greeting .day-label {
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 4px;
+}
+.greeting h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 800;
+}
+.greeting h2 em { color: var(--blue2); font-style: normal; }
+
+/* Streak */
+.streak-card {
+  background: linear-gradient(135deg, #0a1e3d, #071628);
+  border: 1px solid rgba(77,159,255,0.3);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  position: relative; overflow: hidden;
+}
+.streak-card::before {
+  content:'';
+  position:absolute; top:-30px; right:-20px;
+  width:100px; height:100px;
+  background: radial-gradient(circle, rgba(26,110,245,0.3) 0%, transparent 70%);
+}
+.streak-n {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px; font-weight: 800;
+  color: var(--blue2);
+}
+.streak-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.streak-fire { font-size: 48px; filter: drop-shadow(0 0 10px rgba(255,140,0,0.5)); }
+
+/* Stats row */
+.stats-row {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.stat-box {
+  flex: 1; background: var(--s1);
+  border-radius: 14px; padding: 14px 10px;
+  text-align: center; border: 1px solid var(--border);
+}
+.stat-box .sv {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px; font-weight: 800;
+  color: var(--blue2);
+}
+.stat-box .sv.g { color: var(--green); }
+.stat-box .sl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+/* Today tasks */
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.task-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 10px;
+  transition: border-color 0.3s, transform 0.15s;
+  cursor: pointer;
+}
+.task-card:active { transform: scale(0.98); }
+.task-card.done { border-color: rgba(0,229,160,0.35); }
+
+.task-emoji {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: rgba(26,110,245,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+.task-info { flex: 1; }
+.task-name { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+.task-time { font-size: 11px; color: var(--muted); }
+
+.task-check {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.task-check.done-check { background: var(--green); }
+.task-check.todo-check { background: var(--s2); border: 1.5px solid var(--muted); }
+
+.empty-day {
+  text-align: center; padding: 40px 20px;
+  color: var(--muted); font-size: 14px;
+}
+.empty-day .big { font-size: 40px; margin-bottom: 12px; }
+
+/* ── PLANNER SCREEN ── */
+.week-nav {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.week-nav h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 700;
+}
+.week-nav button {
+  background: var(--s1); border: 1px solid var(--border);
+  color: var(--text); border-radius: 10px;
+  padding: 6px 14px; font-size: 18px; cursor: pointer;
+}
+
+.day-tabs {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 6px;
+  margin-bottom: 18px; scrollbar-width: none;
+}
+.day-tabs::-webkit-scrollbar { display: none; }
+
+.day-tab {
+  flex-shrink: 0; padding: 8px 14px;
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 100px; font-size: 12px;
+  cursor: pointer; color: var(--muted);
+  transition: all 0.2s; white-space: nowrap;
+}
+.day-tab.active {
+  background: var(--blue); color: #fff;
+  border-color: var(--blue);
+}
+
+/* Add task form */
+.add-task-form {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px;
+}
+.add-task-form h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--blue2);
+  margin-bottom: 12px;
+}
+
+.form-row {
+  display: flex; gap: 8px; margin-bottom: 10px;
+}
+
+.inp {
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text);
+  padding: 10px 14px; font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.inp:focus { border-color: var(--blue2); }
+.inp::placeholder { color: var(--muted); }
+
+.inp-emoji {
+  width: 48px; flex-shrink: 0;
+  text-align: center; font-size: 20px;
+}
+
+.inp-time { width: 110px; flex-shrink: 0; }
+
+.btn-add {
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 12px;
+  padding: 12px; font-size: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; cursor: pointer;
+  width: 100%; letter-spacing: 1px;
+  transition: opacity 0.2s;
+}
+.btn-add:active { opacity: 0.8; }
+
+/* Task list in planner */
+.plan-task {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.plan-task .pt-time {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--blue2); width: 48px; flex-shrink: 0;
+}
+.plan-task .pt-emoji { font-size: 18px; flex-shrink: 0; }
+.plan-task .pt-name { flex: 1; font-size: 13px; }
+.plan-task .pt-del {
+  background: none; border: none;
+  color: var(--muted); font-size: 18px;
+  cursor: pointer; padding: 4px;
+}
+.plan-task .pt-del:hover { color: var(--red); }
+
+/* ── NOTIF SCREEN ── */
+.notif-status {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px;
+  text-align: center;
+}
+.notif-status .ns-icon { font-size: 48px; margin-bottom: 10px; }
+.notif-status h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; margin-bottom: 6px;
+}
+.notif-status p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.btn-perm {
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 12px;
+  padding: 14px; font-size: 14px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700; cursor: pointer;
+  width: 100%; margin-top: 14px;
+  letter-spacing: 1px; transition: opacity 0.2s;
+}
+.btn-perm:active { opacity: 0.8; }
+
+.upcoming-list { margin-top: 20px; }
+.upcoming-item {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+}
+.upcoming-item .ui-bell { font-size: 20px; }
+.upcoming-item .ui-info { flex: 1; }
+.upcoming-item .ui-name { font-size: 13px; font-weight: 500; }
+.upcoming-item .ui-when { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.upcoming-item .ui-badge {
+  font-size: 10px; padding: 3px 8px;
+  border-radius: 100px; background: rgba(26,110,245,0.2);
+  color: var(--blue2); font-weight: 500;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: calc(var(--nav-h) + 14px);
+  left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--s3); border: 1px solid var(--border);
+  border-radius: 100px; padding: 10px 20px;
+  font-size: 13px; color: var(--text);
+  opacity: 0; transition: all 0.3s;
+  pointer-events: none; z-index: 200;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── SUNDAY REMINDER ── */
+.sunday-banner {
+  background: linear-gradient(135deg, rgba(26,110,245,0.2), rgba(0,229,160,0.1));
+  border: 1px solid rgba(26,110,245,0.4);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.sunday-banner .sb-icon { font-size: 26px; }
+.sunday-banner .sb-msg { font-size: 13px; line-height: 1.45; }
+.sunday-banner .sb-msg strong {
+  color: var(--blue2);
+  font-family: 'Syne', sans-serif;
+  display: block; margin-bottom: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 3px; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.screen.active > * { animation: fadeIn 0.3s ease both; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">M</div>
+      <span class="logo-name">MYSELF</span>
+    </div>
+    <div class="header-date" id="headerDate"></div>
+  </header>
+
+  <!-- ══ SCREEN : HOME ══ -->
+  <div class="screen active" id="screen-home">
+
+    <div class="greeting">
+      <div class="day-label" id="dayLabel"></div>
+      <h2>Bonne journée, <em>Champion 💪</em></h2>
+    </div>
+
+    <!-- Sunday reminder -->
+    <div class="sunday-banner" id="sundayBanner" style="display:none">
+      <div class="sb-icon">📋</div>
+      <div class="sb-msg">
+        <strong>Planifie ta semaine !</strong>
+        C'est dimanche — définis tes tâches pour la semaine à venir.
+      </div>
+    </div>
+
+    <!-- Streak -->
+    <div class="streak-card" style="margin-bottom:16px;">
+      <div>
+        <div class="streak-n" id="streakDays">0</div>
+        <div class="streak-lbl">Jours de discipline 🔥</div>
+      </div>
+      <div class="streak-fire">🔥</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="sv g" id="statDone">0</div>
+        <div class="sl">Faites</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv" id="statTotal">0</div>
+        <div class="sl">Aujourd'hui</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv" id="statWeek">0</div>
+        <div class="sl">Cette semaine</div>
+      </div>
+    </div>
+
+    <div class="section-title">Tâches du jour</div>
+    <div id="todayList"></div>
+
+  </div>
+
+  <!-- ══ SCREEN : PLANNER ══ -->
+  <div class="screen" id="screen-plan">
+
+    <div class="week-nav">
+      <button id="prevWeek">‹</button>
+      <h3 id="weekLabel">Semaine</h3>
+      <button id="nextWeek">›</button>
+    </div>
+
+    <!-- Day tabs -->
+    <div class="day-tabs" id="dayTabs"></div>
+
+    <!-- Add task form -->
+    <div class="add-task-form">
+      <h4>+ Nouvelle tâche</h4>
+      <div class="form-row">
+        <input class="inp inp-emoji" id="fEmoji" type="text" placeholder="📌" maxlength="2">
+        <input class="inp" id="fName" type="text" placeholder="Nom de la tâche...">
+      </div>
+      <div class="form-row">
+        <input class="inp inp-time" id="fTime" type="time">
+        <input class="inp" id="fDur" type="number" placeholder="Durée (min)" min="1" max="480">
+      </div>
+      <button class="btn-add" id="btnAdd">Ajouter</button>
+    </div>
+
+    <div class="section-title" id="planDayTitle"></div>
+    <div id="planList"></div>
+
+  </div>
+
+  <!-- ══ SCREEN : NOTIFICATIONS ══ -->
+  <div class="screen" id="screen-notif">
+
+    <div class="notif-status">
+      <div class="ns-icon" id="notifIcon">🔔</div>
+      <h3 id="notifTitle">Notifications</h3>
+      <p id="notifDesc">Active les notifications pour recevoir tes rappels de tâches à l'heure exacte.</p>
+      <button class="btn-perm" id="btnPerm">Activer les notifications</button>
+    </div>
+
+    <div class="section-title">Prochains rappels</div>
+    <div class="upcoming-list" id="upcomingList"></div>
+
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <button class="nav-btn active" data-screen="home">
+      <span class="ni">🏠</span>
+      <span>Accueil</span>
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-btn" data-screen="plan">
+      <span class="ni">📅</span>
+      <span>Planning</span>
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-btn" data-screen="notif">
+      <span class="ni">🔔</span>
+      <span>Rappels</span>
+      <div class="nav-dot"></div>
+    </button>
+  </nav>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// DATA LAYER
+// ══════════════════════════════════════
+const DB = {
+  get(k, def) { try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; } },
+  set(k, v)   { localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+// tasks: { "YYYY-MM-DD": [ {id, emoji, name, time, dur, done} ] }
+function getTasks(date) { return DB.get('tasks_' + date, []); }
+function setTasks(date, arr) { DB.set('tasks_' + date, arr); }
+
+function getStreak() { return DB.get('streak', { days: 0, lastDate: null }); }
+function setStreak(s) { DB.set('streak', s); }
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+const DAYS_FR = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const MONTHS_FR = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+
+function fmt(date) {
+  return date.toISOString().slice(0,10);
+}
+function parseDate(str) {
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function today() { return fmt(new Date()); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ══════════════════════════════════════
+// STREAK
+// ══════════════════════════════════════
+function updateStreak() {
+  const s = getStreak();
+  const td = today();
+  if (s.lastDate !== td) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (s.lastDate === fmt(yesterday)) {
+      s.days += 1;
+    } else if (s.lastDate !== td) {
+      s.days = 1;
+    }
+    s.lastDate = td;
+    setStreak(s);
+  }
+  document.getElementById('streakDays').textContent = s.days;
+}
+
+// ══════════════════════════════════════
+// SERVICE WORKER + NOTIFICATIONS
+// ══════════════════════════════════════
+let swReg = null;
+
+async function initSW() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swReg = await navigator.serviceWorker.register('./sw.js');
+    console.log('SW registered');
+  } catch(e) {
+    console.warn('SW failed', e);
+  }
+}
+
+function notifPermission() { return Notification.permission; }
+
+async function requestNotifPerm() {
+  if (!('Notification' in window)) return 'unsupported';
+  const p = await Notification.requestPermission();
+  renderNotifScreen();
+  if (p === 'granted') {
+    toast('✅ Notifications activées !');
+    scheduleAllAlarms();
+  }
+  return p;
+}
+
+function scheduleAlarm(task, date) {
+  if (notifPermission() !== 'granted') return;
+  const [h, m] = task.time.split(':').map(Number);
+  const target = new Date(parseDate(date));
+  target.setHours(h, m, 0, 0);
+  const delay = target - Date.now();
+  if (delay <= 0) return;
+
+  // Use SW message for background support
+  if (swReg && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SCHEDULE_ALARM',
+      id: 'alarm_' + task.id,
+      delay,
+      title: 'MYSELF · ' + task.name,
+      body: '⏰ ' + task.time + (task.dur ? ' · ' + task.dur + ' min' : '')
+    });
+  } else {
+    // Fallback: setTimeout (works only when tab is open)
+    setTimeout(() => {
+      if (notifPermission() === 'granted') {
+        new Notification('MYSELF · ' + task.name, {
+          body: '⏰ ' + task.time + (task.dur ? ' · ' + task.dur + ' min' : ''),
+          icon: './icon.svg'
+        });
+      }
+    }, delay);
+  }
+}
+
+function scheduleAllAlarms() {
+  // Schedule alarms for next 7 days
+  for (let i = 0; i < 7; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const ds = fmt(d);
+    getTasks(ds).forEach(t => scheduleAlarm(t, ds));
+  }
+}
+
+// Sunday notification
+function scheduleSundayReminder() {
+  if (notifPermission() !== 'granted') return;
+  const now = new Date();
+  const sunday = new Date();
+  sunday.setDate(sunday.getDate() + ((7 - sunday.getDay()) % 7 || 7));
+  sunday.setHours(19, 0, 0, 0);
+  const delay = sunday - now;
+  if (delay <= 0) return;
+  if (swReg && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SCHEDULE_ALARM',
+      id: 'sunday_reminder',
+      delay,
+      title: 'MYSELF · Planifie ta semaine !',
+      body: '📋 C\'est dimanche — définis tes tâches pour la semaine à venir.'
+    });
+  }
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.querySelector('[data-screen="' + screen + '"]').classList.add('active');
+
+  if (screen === 'home') renderHome();
+  if (screen === 'plan') renderPlanner();
+  if (screen === 'notif') renderNotifScreen();
+}
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => navigate(btn.dataset.screen));
+});
+
+// ══════════════════════════════════════
+// HOME SCREEN
+// ══════════════════════════════════════
+function renderHome() {
+  updateStreak();
+
+  const now = new Date();
+  const td = today();
+  document.getElementById('headerDate').textContent =
+    DAYS_FR[now.getDay()] + ' ' + now.getDate() + ' ' + MONTHS_FR[now.getMonth()];
+  document.getElementById('dayLabel').textContent =
+    DAYS_FR[now.getDay()].toUpperCase() + ' · ' + now.getDate() + ' ' + MONTHS_FR[now.getMonth()].toUpperCase();
+
+  // Sunday banner
+  document.getElementById('sundayBanner').style.display =
+    now.getDay() === 0 ? 'flex' : 'none';
+
+  const tasks = getTasks(td);
+
+  // Stats
+  const done = tasks.filter(t => t.done).length;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statTotal').textContent = tasks.length;
+
+  // Week total
+  let weekCount = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - d.getDay() + i);
+    weekCount += getTasks(fmt(d)).length;
+  }
+  document.getElementById('statWeek').textContent = weekCount;
+
+  // Task list
+  const list = document.getElementById('todayList');
+  if (tasks.length === 0) {
+    list.innerHTML = `<div class="empty-day">
+      <div class="big">📭</div>
+      Aucune tâche aujourd'hui.<br>Va dans <strong>Planning</strong> pour en ajouter.
+    </div>`;
+    return;
+  }
+
+  tasks.sort((a,b) => a.time.localeCompare(b.time));
+  list.innerHTML = tasks.map(t => `
+    <div class="task-card ${t.done ? 'done' : ''}" onclick="toggleTask('${td}','${t.id}')">
+      <div class="task-emoji">${t.emoji || '📌'}</div>
+      <div class="task-info">
+        <div class="task-name">${t.name}</div>
+        <div class="task-time">${t.time}${t.dur ? ' · ' + t.dur + ' min' : ''}</div>
+      </div>
+      <div class="task-check ${t.done ? 'done-check' : 'todo-check'}">${t.done ? '✓' : ''}</div>
+    </div>
+  `).join('');
+}
+
+function toggleTask(date, id) {
+  const tasks = getTasks(date);
+  const t = tasks.find(t => t.id === id);
+  if (t) t.done = !t.done;
+  setTasks(date, tasks);
+  renderHome();
+  toast(t.done ? '✅ Tâche complétée !' : '↩ Tâche réouverte');
+}
+
+// ══════════════════════════════════════
+// PLANNER SCREEN
+// ══════════════════════════════════════
+let planWeekOffset = 0;
+let planDayIndex   = new Date().getDay(); // 0=Sun
+
+function getWeekDates(offset) {
+  const dates = [];
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay() + (offset * 7));
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function renderPlanner() {
+  const dates = getWeekDates(planWeekOffset);
+  const start = dates[0], end = dates[6];
+
+  document.getElementById('weekLabel').textContent =
+    start.getDate() + ' ' + MONTHS_FR[start.getMonth()] +
+    ' – ' + end.getDate() + ' ' + MONTHS_FR[end.getMonth()];
+
+  // Tabs
+  const tabs = document.getElementById('dayTabs');
+  tabs.innerHTML = dates.map((d, i) => `
+    <div class="day-tab ${i === planDayIndex ? 'active' : ''}"
+         onclick="selectPlanDay(${i})">
+      ${DAYS_FR[i].slice(0,3)} ${d.getDate()}
+    </div>
+  `).join('');
+
+  renderPlanDay(dates[planDayIndex]);
+}
+
+function selectPlanDay(i) {
+  planDayIndex = i;
+  renderPlanner();
+}
+
+function renderPlanDay(date) {
+  const ds = fmt(date);
+  document.getElementById('planDayTitle').textContent =
+    DAYS_FR[date.getDay()] + ' ' + date.getDate() + ' ' + MONTHS_FR[date.getMonth()];
+
+  const tasks = getTasks(ds);
+  tasks.sort((a,b) => a.time.localeCompare(b.time));
+
+  document.getElementById('planList').innerHTML = tasks.length === 0
+    ? '<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0">Aucune tâche — ajoutes-en une !</p>'
+    : tasks.map(t => `
+      <div class="plan-task">
+        <span class="pt-time">${t.time}</span>
+        <span class="pt-emoji">${t.emoji || '📌'}</span>
+        <span class="pt-name">${t.name}${t.dur ? ' <span style="color:var(--muted);font-size:11px">· ' + t.dur + ' min</span>' : ''}</span>
+        <button class="pt-del" onclick="deleteTask('${ds}','${t.id}')">✕</button>
+      </div>
+    `).join('');
+}
+
+function deleteTask(date, id) {
+  const tasks = getTasks(date).filter(t => t.id !== id);
+  setTasks(date, tasks);
+  renderPlanner();
+  toast('🗑 Tâche supprimée');
+}
+
+document.getElementById('btnAdd').addEventListener('click', () => {
+  const emoji = document.getElementById('fEmoji').value.trim() || '📌';
+  const name  = document.getElementById('fName').value.trim();
+  const time  = document.getElementById('fTime').value;
+  const dur   = document.getElementById('fDur').value;
+
+  if (!name || !time) { toast('⚠️ Nom et heure requis'); return; }
+
+  const dates = getWeekDates(planWeekOffset);
+  const ds = fmt(dates[planDayIndex]);
+  const tasks = getTasks(ds);
+
+  const task = { id: uid(), emoji, name, time, dur: dur ? parseInt(dur) : null, done: false };
+  tasks.push(task);
+  setTasks(ds, tasks);
+  scheduleAlarm(task, ds);
+
+  // Reset form
+  ['fEmoji','fName','fTime','fDur'].forEach(id => document.getElementById(id).value = '');
+
+  renderPlanner();
+  toast('✅ Tâche ajoutée !');
+});
+
+document.getElementById('prevWeek').addEventListener('click', () => {
+  planWeekOffset--;
+  renderPlanner();
+});
+document.getElementById('nextWeek').addEventListener('click', () => {
+  planWeekOffset++;
+  renderPlanner();
+});
+
+// ══════════════════════════════════════
+// NOTIF SCREEN
+// ══════════════════════════════════════
+function renderNotifScreen() {
+  const perm = notifPermission();
+  const icon = document.getElementById('notifIcon');
+  const title = document.getElementById('notifTitle');
+  const desc = document.getElementById('notifDesc');
+  const btn = document.getElementById('btnPerm');
+
+  if (perm === 'granted') {
+    icon.textContent = '✅';
+    title.textContent = 'Notifications activées';
+    desc.textContent = 'Tu recevras un rappel à l\'heure exacte de chaque tâche.';
+    btn.textContent = 'Reprogrammer les rappels';
+    btn.onclick = () => { scheduleAllAlarms(); scheduleSundayReminder(); toast('🔔 Rappels reprogrammés !'); };
+  } else if (perm === 'denied') {
+    icon.textContent = '🚫';
+    title.textContent = 'Notifications bloquées';
+    desc.textContent = 'Tu as bloqué les notifications. Va dans les paramètres de ton navigateur pour les réactiver.';
+    btn.textContent = 'Ouvrir les paramètres';
+    btn.onclick = () => toast('⚙️ Va dans Paramètres › Confidentialité › Notifications');
+  } else {
+    icon.textContent = '🔔';
+    title.textContent = 'Notifications désactivées';
+    desc.textContent = 'Active les notifications pour recevoir tes rappels à l\'heure exacte de chaque tâche.';
+    btn.textContent = 'Activer les notifications';
+    btn.onclick = requestNotifPerm;
+  }
+
+  // Upcoming
+  renderUpcoming();
+}
+
+function renderUpcoming() {
+  const upcoming = [];
+  const now = Date.now();
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() + i);
+    const ds = fmt(d);
+    getTasks(ds).forEach(t => {
+      const [h, m] = t.time.split(':').map(Number);
+      const target = new Date(d); target.setHours(h, m, 0, 0);
+      if (target > now) {
+        upcoming.push({ task: t, date: d, target });
+      }
+    });
+  }
+  upcoming.sort((a,b) => a.target - b.target);
+
+  const list = document.getElementById('upcomingList');
+  if (upcoming.length === 0) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:13px;text-align:center;padding:20px 0">Aucun rappel à venir — ajoute des tâches dans le planning !</p>';
+    return;
+  }
+
+  list.innerHTML = upcoming.slice(0, 10).map(u => {
+    const diff = u.target - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const when = h > 0 ? `dans ${h}h${m > 0 ? m + 'min' : ''}` : `dans ${m} min`;
+    return `
+      <div class="upcoming-item">
+        <span class="ui-bell">${u.task.emoji || '📌'}</span>
+        <div class="ui-info">
+          <div class="ui-name">${u.task.name}</div>
+          <div class="ui-when">${DAYS_FR[u.date.getDay()]} · ${u.task.time}</div>
+        </div>
+        <span class="ui-badge">${when}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+document.getElementById('btnPerm').addEventListener('click', requestNotifPerm);
+
+// ══════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════
+async function boot() {
+  await initSW();
+  renderHome();
+  if (notifPermission() === 'granted') scheduleAllAlarms();
+  scheduleSundayReminder();
+
+  // Set today's tab in planner
+  planDayIndex = new Date().getDay();
+
+  // Set default time to now
+  const now = new Date();
+  document.getElementById('fTime').value =
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+}
+
+boot();
+</script>
+</body>
+</html>
