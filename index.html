@@ -10,6 +10,7 @@
 <title>MYSELF</title>
 <link rel="manifest" href="./manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 :root {
@@ -126,7 +127,7 @@ nav {
   cursor: pointer; padding: 8px 20px;
   transition: color 0.2s;
 }
-.nav-btn .ni { font-size: 22px; line-height: 1; }
+.nav-btn .ni { font-size: 20px; line-height: 1; }
 .nav-btn.active { color: var(--blue2); }
 .nav-dot {
   width: 4px; height: 4px;
@@ -173,7 +174,7 @@ nav {
   color: var(--blue2);
 }
 .streak-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.streak-fire { font-size: 48px; filter: drop-shadow(0 0 10px rgba(255,140,0,0.5)); }
+.streak-fire { font-size: 44px; color: #ff8c00; filter: drop-shadow(0 0 10px rgba(255,140,0,0.5)); }
 
 /* Stats row */
 .stats-row {
@@ -413,7 +414,7 @@ nav {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 16px;
 }
-.sunday-banner .sb-icon { font-size: 26px; }
+.sunday-banner .sb-icon { font-size: 26px; color: var(--blue2); }
 .sunday-banner .sb-msg { font-size: 13px; line-height: 1.45; }
 .sunday-banner .sb-msg strong {
   color: var(--blue2);
@@ -456,7 +457,7 @@ nav {
 
     <!-- Sunday reminder -->
     <div class="sunday-banner" id="sundayBanner" style="display:none">
-      <div class="sb-icon">📋</div>
+      <div class="sb-icon"><i class="fa-solid fa-clipboard-list"></i></div>
       <div class="sb-msg">
         <strong>Planifie ta semaine !</strong>
         C'est dimanche — définis tes tâches pour la semaine à venir.
@@ -467,9 +468,9 @@ nav {
     <div class="streak-card" style="margin-bottom:16px;">
       <div>
         <div class="streak-n" id="streakDays">0</div>
-        <div class="streak-lbl">Jours de discipline 🔥</div>
+        <div class="streak-lbl">Jours de discipline</div>
       </div>
-      <div class="streak-fire">🔥</div>
+      <div class="streak-fire"><i class="fa-solid fa-fire"></i></div>
     </div>
 
     <!-- Stats -->
@@ -497,9 +498,9 @@ nav {
   <div class="screen" id="screen-plan">
 
     <div class="week-nav">
-      <button id="prevWeek">‹</button>
+      <button id="prevWeek"><i class="fa-solid fa-chevron-left"></i></button>
       <h3 id="weekLabel">Semaine</h3>
-      <button id="nextWeek">›</button>
+      <button id="nextWeek"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
     <!-- Day tabs -->
@@ -507,9 +508,9 @@ nav {
 
     <!-- Add task form -->
     <div class="add-task-form">
-      <h4>+ Nouvelle tâche</h4>
+      <h4><i class="fa-solid fa-plus"></i> Nouvelle tâche</h4>
       <div class="form-row">
-        <input class="inp inp-emoji" id="fEmoji" type="text" placeholder="📌" maxlength="2">
+        <input class="inp inp-emoji" id="fEmoji" type="text" placeholder="icône" maxlength="2" style="font-size:16px">
         <input class="inp" id="fName" type="text" placeholder="Nom de la tâche...">
       </div>
       <div class="form-row">
@@ -528,7 +529,7 @@ nav {
   <div class="screen" id="screen-notif">
 
     <div class="notif-status">
-      <div class="ns-icon" id="notifIcon">🔔</div>
+      <div class="ns-icon" id="notifIcon"><i class="fa-solid fa-bell"></i></div>
       <h3 id="notifTitle">Notifications</h3>
       <p id="notifDesc">Active les notifications pour recevoir tes rappels de tâches à l'heure exacte.</p>
       <button class="btn-perm" id="btnPerm">Activer les notifications</button>
@@ -542,17 +543,17 @@ nav {
   <!-- NAV -->
   <nav>
     <button class="nav-btn active" data-screen="home">
-      <span class="ni">🏠</span>
+      <i class="fa-solid fa-house ni"></i>
       <span>Accueil</span>
       <div class="nav-dot"></div>
     </button>
     <button class="nav-btn" data-screen="plan">
-      <span class="ni">📅</span>
+      <i class="fa-solid fa-calendar-days ni"></i>
       <span>Planning</span>
       <div class="nav-dot"></div>
     </button>
     <button class="nav-btn" data-screen="notif">
-      <span class="ni">🔔</span>
+      <i class="fa-solid fa-bell ni"></i>
       <span>Rappels</span>
       <div class="nav-dot"></div>
     </button>
@@ -764,7 +765,7 @@ function renderHome() {
   const list = document.getElementById('todayList');
   if (tasks.length === 0) {
     list.innerHTML = `<div class="empty-day">
-      <div class="big">📭</div>
+      <div class="big"><i class="fa-solid fa-inbox" style="color:var(--muted)"></i></div>
       Aucune tâche aujourd'hui.<br>Va dans <strong>Planning</strong> pour en ajouter.
     </div>`;
     return;
@@ -778,7 +779,7 @@ function renderHome() {
         <div class="task-name">${t.name}</div>
         <div class="task-time">${t.time}${t.dur ? ' · ' + t.dur + ' min' : ''}</div>
       </div>
-      <div class="task-check ${t.done ? 'done-check' : 'todo-check'}">${t.done ? '✓' : ''}</div>
+      <div class="task-check ${t.done ? 'done-check' : 'todo-check'}">${t.done ? '<i class="fa-solid fa-check"></i>' : ''}</div>
     </div>
   `).join('');
 }
@@ -851,7 +852,7 @@ function renderPlanDay(date) {
         <span class="pt-time">${t.time}</span>
         <span class="pt-emoji">${t.emoji || '📌'}</span>
         <span class="pt-name">${t.name}${t.dur ? ' <span style="color:var(--muted);font-size:11px">· ' + t.dur + ' min</span>' : ''}</span>
-        <button class="pt-del" onclick="deleteTask('${ds}','${t.id}')">✕</button>
+        <button class="pt-del" onclick="deleteTask('${ds}','${t.id}')"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `).join('');
 }
@@ -907,19 +908,19 @@ function renderNotifScreen() {
   const btn = document.getElementById('btnPerm');
 
   if (perm === 'granted') {
-    icon.textContent = '✅';
+    icon.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--green)"></i>';
     title.textContent = 'Notifications activées';
     desc.textContent = 'Tu recevras un rappel à l\'heure exacte de chaque tâche.';
     btn.textContent = 'Reprogrammer les rappels';
     btn.onclick = () => { scheduleAllAlarms(); scheduleSundayReminder(); toast('🔔 Rappels reprogrammés !'); };
   } else if (perm === 'denied') {
-    icon.textContent = '🚫';
+    icon.innerHTML = '<i class="fa-solid fa-ban" style="color:var(--red)"></i>';
     title.textContent = 'Notifications bloquées';
     desc.textContent = 'Tu as bloqué les notifications. Va dans les paramètres de ton navigateur pour les réactiver.';
     btn.textContent = 'Ouvrir les paramètres';
     btn.onclick = () => toast('⚙️ Va dans Paramètres › Confidentialité › Notifications');
   } else {
-    icon.textContent = '🔔';
+    icon.innerHTML = '<i class="fa-solid fa-bell" style="color:var(--blue2)"></i>';
     title.textContent = 'Notifications désactivées';
     desc.textContent = 'Active les notifications pour recevoir tes rappels à l\'heure exacte de chaque tâche.';
     btn.textContent = 'Activer les notifications';
@@ -959,7 +960,7 @@ function renderUpcoming() {
     const when = h > 0 ? `dans ${h}h${m > 0 ? m + 'min' : ''}` : `dans ${m} min`;
     return `
       <div class="upcoming-item">
-        <span class="ui-bell">${u.task.emoji || '📌'}</span>
+        <span class="ui-bell"><i class="fa-solid fa-bell"></i></span>
         <div class="ui-info">
           <div class="ui-name">${u.task.name}</div>
           <div class="ui-when">${DAYS_FR[u.date.getDay()]} · ${u.task.time}</div>
